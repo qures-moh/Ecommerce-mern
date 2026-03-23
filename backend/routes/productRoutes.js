@@ -1,0 +1,9 @@
+const express=require("express");
+const { createProduct } = require("../controllers/productController");
+const router=express.Router();
+const {auth}=require('../middleware/auth')
+const { isAdmin } = require("../middleware/isAdmin");
+
+router.post("/create",auth,isAdmin,createProduct);
+
+module.exports=router;
