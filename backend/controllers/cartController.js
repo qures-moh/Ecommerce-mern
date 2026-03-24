@@ -5,7 +5,7 @@ const Cart=require("../models/Cart")
 //         }
 
 
-//     }catch(error){
+//     }catch(error)
 //         // 
 //     }
 // }
