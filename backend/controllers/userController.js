@@ -17,7 +17,7 @@ exports.createUser = async (req, res) => {
       name,
       email,
       password,
-      role:"admin"
+      
     });
 
     res.status(201).json({ message: "User added succefully", data: newUser });

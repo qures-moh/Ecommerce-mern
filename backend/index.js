@@ -8,11 +8,13 @@ const cookieParser=require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
 
 const productRoutes = require("./routes/productRoutes");
+const cartRoutes=require("./routes/cartRoutes");
 const connectDb=require("./config/db");
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/user",userRoutes);
-app.use("/api/product",productRoutes)
+app.use("/api/product",productRoutes);
+app.use("/api/cart",cartRoutes)
 
 require("dotenv").config(); 
 connectDb();
