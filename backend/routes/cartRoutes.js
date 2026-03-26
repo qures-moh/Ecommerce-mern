@@ -1,9 +1,13 @@
 const express=require("express");
 const { auth } = require("../middleware/auth");
 const { isAdmin } = require("../middleware/isAdmin");
-const { addToCrt } = require("../controllers/cartController");
+const { addToCart, getCart, decreaseQuantity, increseQuantity, totalPrice } = require("../controllers/cartController");
 const router=express.Router();
 
-router.post("/add",auth,addToCrt);
+router.post("/add",auth,addToCart);
+router.get("/getCart",auth,getCart);
+router.post("/decreaseqty/:productId",auth,decreaseQuantity);
+router.post("/increaseqty/:productId",auth,increseQuantity);
+router.get("/totalPrice",auth,totalPrice)
 
 module.exports=router;
