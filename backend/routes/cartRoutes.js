@@ -8,6 +8,7 @@ router.post("/add",auth,addToCart);
 router.get("/getCart",auth,getCart);
 router.post("/decreaseqty/:productId",auth,decreaseQuantity);
 router.post("/increaseqty/:productId",auth,increseQuantity);
-router.get("/totalPrice",auth,totalPrice)
+router.get("/totalPrice",auth,totalPrice);
+
 
 module.exports=router;
