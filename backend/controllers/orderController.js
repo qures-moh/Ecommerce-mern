@@ -155,6 +155,12 @@ if (!statusFlow[myOrder.status].includes(status)) {
    
 
     myOrder.status = status;
+    if(myOrder.status==="delivered"){
+      myOrder.deliveredAt=Date.now();
+    }
+    if(myOrder.status ==="cancelled"){
+      myOrder.cancelledAt=Date.now();
+    }
     await myOrder.save();
 
     res
