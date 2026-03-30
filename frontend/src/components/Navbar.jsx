@@ -1,10 +1,13 @@
 import { Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
     const [isOpen,setIsOpen]=useState(false);
+
+const navigate = useNavigate();
   return (
-    <nav className="bg-white shadow-md px-4 py-3">
+    <nav className= " sticky top-0 bg-white shadow-md px-4 py-3">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <h1 className="text-2xl front-bold text-blue-600">MyShop</h1>
         <div className="hidden md:flex items-center gap-6">
@@ -15,7 +18,7 @@ const NavBar = () => {
             Shop
           </a>
           <ShoppingCart className="cursor-pointer" />
-          <button className="bg-blue-600 text-white px-4 py-1 rounded">
+          <button className="bg-blue-600 text-white px-4 py-1 rounded"  onClick={() => navigate("/login")}>
             Login
           </button>
         </div>
@@ -35,8 +38,9 @@ const NavBar = () => {
             <ShoppingCart />
             <span>Cart</span>
           </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Login
+          
+          <button className="bg-blue-600 text-white px-4 py-2 rounded"  onClick={() => navigate("/login")}>
+         Login
           </button>
       
              

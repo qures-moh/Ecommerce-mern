@@ -1,17 +1,32 @@
-export default function Card() {
+export default function Card({product}) {
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-gray-300">
-      <img src="https://i.pinimg.com/200x/56/13/90/5613907f2eef08bce7589040f04774b9.jpg" className="w-full h-48 object-cover" />
- 
-      
-       <h2 className="text-lg font-semibold line-clamp-2">
-           shorts
+     <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 group">
+       <div className="h-48 overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"/>
+ </div>
+      <div className="p-4 flex flex-col justify-between h-[200px]">
+       <h2 className="text-base font-semibold text-gray-800 line-clamp-2">
+           {product.name}
         </h2>
-          <p className="text-blue-600 font-bold">Price :4000</p>
-           <button className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+        
+        <p className="text-gray-500 text-sm mt-1 line-clamp-2">
+        {product.description}
+      </p>
+            <div className="mt-3 flex items-center justify-between">
+                <p className="text-lg font-bold text-blue-600">
+
+        ₹{product.price}
+      </p>
+  
+          
+        <button className="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">
           Add to Cart
         </button>
       </div>
+      </div></div>
 
   );
 }

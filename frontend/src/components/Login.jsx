@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "./api";
+import { useNavigate } from "react-router-dom";
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
@@ -7,6 +8,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 const [success, setSuccess] = useState("");
+const navigate=useNavigate();
   const handleLoginOrSignUp = async () => {
     try {
       setError("");
@@ -16,6 +18,13 @@ const [success, setSuccess] = useState("");
       const res = await API.post("/user/login",{
         email,password
       });
+       const profileRes = await API.get("/user/profile");
+       const user = profileRes.data.data;
+        if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
       setEmail("");
       setPassword("");
         
@@ -27,6 +36,7 @@ const [success, setSuccess] = useState("");
         email,
         password,
       });
+      navigate("/");
       console.log("Signup successful", res.data);
        setSuccess("Account created successfully 🚀");
       setEmail("");
