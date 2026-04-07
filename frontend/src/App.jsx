@@ -1,5 +1,7 @@
-import AdMinDashboard from "./components/AdminDashboard"
+import AdminDashboard from "./components/AdminDashboard"
 import Card from "./components/Card"
+import Cart from "./components/Cart"
+import CheckOut from "./components/CheckOut"
 import Home from "./components/Home"
 import Layout from "./components/Layout"
 import Login from "./components/Login"
@@ -19,7 +21,9 @@ function App() {
      <Route index element={<Home />} />
       
    <Route path="product/:id" element={<ProductDetails />} />
-   <Route path="/admin" element={<AdMinDashboard/>}/>
+   <Route path="admin" element={<AdminDashboard/>}/>
+   <Route path="cart" element={<Cart/>}/>
+   <Route path="checkout" element={<CheckOut/>}/>
    </Route>
    </Routes>
    </BrowserRouter>
