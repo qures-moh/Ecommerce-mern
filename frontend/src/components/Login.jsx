@@ -1,25 +1,29 @@
 import { useState } from "react";
 import API from "./api";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AddUser } from "../config/authSlice";
+import { toast } from "react-toastify";
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-const [success, setSuccess] = useState("");
+
+const dispatch = useDispatch();
 const navigate=useNavigate();
   const handleLoginOrSignUp = async () => {
     try {
-      setError("");
-    setSuccess("");
-
+      
+   if (!validateForm()) return;
       if(isLogin){
       const res = await API.post("/user/login",{
         email,password
       });
+      toast.success("Login successful ");
        const profileRes = await API.get("/user/profile");
        const user = profileRes.data.data;
+      dispatch(AddUser(user));
         if (user.role === "admin") {
         navigate("/admin");
       } else {
@@ -28,7 +32,7 @@ const navigate=useNavigate();
       setEmail("");
       setPassword("");
         
-      setSuccess("Login successful ✅");
+      
       console.log("Loginsuccesfull",res.data);
     }else{
       const res = await API.post("/user/register", {
@@ -36,18 +40,47 @@ const navigate=useNavigate();
         email,
         password,
       });
+      toast.success("Account created successfully ");
+       const profileRes = await API.get("/user/profile");
+        const user = profileRes.data.data;
+        dispatch(AddUser(user));
       navigate("/");
       console.log("Signup successful", res.data);
-       setSuccess("Account created successfully 🚀");
+      
       setEmail("");
       setPassword("");
       setName("");
     }
     } catch (err) {
-      console.log("Login failed");
-      setError(err.response?.data?.message || "Something went wrong ❌");
+      
+         const message =
+    err.response?.data?.message || "Something went wrong";
+
+    
+  toast.error(message);
     }
   };
+  const validateForm = () => {
+  if (!email || !password) {
+    toast.error("Email and password are required");
+    return false;
+  }
+    if (password.length < 6) {
+    toast.error("Password must be at least 6 characters");
+    return false;
+  }
+   if (!/\S+@\S+\.\S+/.test(email)) {
+  toast.error("Enter valid email");
+  return false;
+}
+   if (!isLogin) {
+    if (!name || name.trim().length < 2) {
+      toast.error("Name must be at least 2 characters");
+      return false;
+    }
+  }
+  return true;
+  }
   return (
     <div className="min-h-screen flex">
       <div className="hidden md:flex w-1/2 items-center justify-center bg-gradient-to-r from-sky-400 to-blue-500 ">
@@ -70,7 +103,8 @@ const navigate=useNavigate();
               placeholder="Full Name"
               className="w-full mb-3 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               value={name}
-              onChange={(e) =>{setName(e.target.value); setError("")}}
+              onChange={(e) =>{setName(e.target.value); }}
+              required
             />
           )}
           <input
@@ -78,7 +112,8 @@ const navigate=useNavigate();
             placeholder="Email"
             className="w-full mb-3 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             value={email}
-            onChange={(e) => {setEmail(e.target.value); setError("")}}
+            onChange={(e) => {setEmail(e.target.value); }}
+            required
           />
           <input
             type="password"
@@ -86,6 +121,7 @@ const navigate=useNavigate();
             className="w-full mb-4 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             value={password}
   onChange={(e) => setPassword(e.target.value)}
+  required
 
           />
           <button
@@ -94,12 +130,7 @@ const navigate=useNavigate();
           >
             {isLogin ? "Login" : "Sign Up"}
           </button>
-          {error &&<p className=" mt-2 flex justify-center items-center text-red-500 text-lg">{error}</p>}
-          {success && (
-  <p className="text-green-600 text-sm mb-2 text-center">
-    {success}
-  </p>
-)}
+     
           <p className="text-sm mt-2 text-center text-gray-600">
             {isLogin ? "Don't have an account?" : "Already have an account?"}
             <span

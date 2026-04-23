@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import API from "./api";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const [cart, setCart] = useState(null);
-
+  const navigate= useNavigate();
+  const user=useSelector((state)=>state.auth.user);
+   console.log("USER:", user);
   const fetchCart = async () => {
     try {
       const res = await API.get("/cart/getCart");
       setCart(res.data.data);
+      console.log(res.data.data)
     } catch (error) {
       console.log(error);
     }
@@ -40,13 +45,19 @@ export default function Cart() {
   };
 
   useEffect(() => {
+    if (user === null) return;
+      if (!user) {
+    navigate("/login");
+  } else {
     fetchCart();
-  }, []);
+  }
+  }, [user]);
 
   const total = cart?.items?.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
+    (acc, item) =>acc + (item.product ? item.product.price * item.quantity : 0),
     0,
   );
+  
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
@@ -64,10 +75,11 @@ export default function Cart() {
   key={item._id}
   className="flex gap-6 border rounded-2xl p-5 shadow-sm hover:shadow-md transition bg-white items-center"
 >
-  {/* Image */}
+  
   <img
-    src={item.product.image || "https://via.placeholder.com/120"}
-    alt={item.product.name}
+    src={item.product?.image || "https://via.placeholder.com/120"}
+   
+    alt={item.product?.name}
     className="w-28 h-28 object-cover rounded-xl"
   />
 
@@ -77,15 +89,15 @@ export default function Cart() {
     {/* Top Section */}
     <div>
       <h2 className="text-xl font-semibold">
-        {item.product.name}
+        {item.product?.name}
       </h2>
 
       <p className="text-gray-600 mt-1">
-        ₹{item.product.price}
+        ₹{item.product?.price}
       </p>
 
       <p className="text-sm text-gray-400">
-        Stock: {item.product.stock}
+        Stock: {item.product?.stock}
       </p>
     </div>
 
@@ -102,7 +114,7 @@ export default function Cart() {
         </button>
 
         <span className="px-4 font-medium">
-          {item.quantity}
+          {item?.quantity}
         </span>
 
         <button
@@ -139,10 +151,10 @@ export default function Cart() {
 
             <div className="flex justify-between text-gray-800 text-lg font-semibold mb-6">
               <span>Total Price</span>
-              <span>₹{total}</span>
+              <span>₹{total || 0}</span>
             </div>
 
-            <button className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition">
+            <button className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition" onClick={()=>navigate("/checkout")}>
               Checkout
             </button>
           </div>

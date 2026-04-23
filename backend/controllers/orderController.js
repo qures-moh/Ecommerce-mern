@@ -3,7 +3,13 @@ const Order = require("../models/Order");
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { shippingAddress, paymentMethod } = req.body;
+    console.log("USER:", req.user);
+    const {
+      shippingAddress,
+      paymentMethod,
+      razorpay_order_id,
+      razorpay_payment_id,
+    } = req.body;
     const cart = await Cart.findOne({ user: userId }).populate(
       "items.product",
       "price",
@@ -27,6 +33,7 @@ exports.createOrder = async (req, res) => {
         price: price,
       };
     });
+    const paymentStatus = paymentMethod === "ONLINE" ? "paid" : "pending";
 
     //createOrder
     const order = new Order({
@@ -35,7 +42,9 @@ exports.createOrder = async (req, res) => {
       totalAmount,
       shippingAddress,
       paymentMethod,
-      paymentStatus: "pending",
+      paymentStatus,
+      razorpay_order_id: razorpay_order_id || null,
+      razorpay_payment_id: razorpay_payment_id || null,
     });
 
     await order.save();
@@ -66,7 +75,7 @@ exports.getMyOrder = async (req, res) => {
     res
       .status(200)
       .json({ message: "My Order Succefully fetched", data: orders });
-  } catch (eror) {
+  } catch (error) {
     res.status(500).json({
       message: "Order creation failed",
       error: error.message,
@@ -128,7 +137,7 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: "Order not Found" });
     }
 
-     if (myOrder.status === status) {
+    if (myOrder.status === status) {
       return res.status(400).json({
         message: `Order is already ${status}`,
       });
@@ -146,21 +155,27 @@ exports.updateOrderStatus = async (req, res) => {
       cancelled: [],
     };
 
-
-if (!statusFlow[myOrder.status].includes(status)) {
-  return res.status(400).json({
-    message: `Cannot change status from ${myOrder.status} to ${status}`,
-  });
-}
-   
+    if (!statusFlow[myOrder.status].includes(status)) {
+      return res.status(400).json({
+        message: `Cannot change status from ${myOrder.status} to ${status}`,
+      });
+    }
 
     myOrder.status = status;
-    if(myOrder.status==="delivered"){
-      myOrder.deliveredAt=Date.now();
+    if (myOrder.status === "delivered") {
+      myOrder.deliveredAt = Date.now();
+       if (
+    myOrder.paymentMethod === "COD" &&
+    myOrder.paymentStatus !== "paid"
+  ) {
+    myOrder.paymentStatus = "paid";
     }
-    if(myOrder.status ==="cancelled"){
-      myOrder.cancelledAt=Date.now();
+  
+  }
+    if (myOrder.status === "cancelled") {
+      myOrder.cancelledAt = Date.now();
     }
+  
     await myOrder.save();
 
     res
@@ -169,6 +184,25 @@ if (!statusFlow[myOrder.status].includes(status)) {
   } catch (error) {
     res.status(500).json({
       message: "Order update failed",
+      error: error.message,
+    });
+  }
+};
+
+exports.getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "name email")
+      .populate("items.product", "name price")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch orders",
       error: error.message,
     });
   }

@@ -16,7 +16,8 @@ const productSchema=mongoose.Schema({
     },
     category:{
         type:String,
-        enum:["electronics","clothing", "books", "home"]
+        enum:["electronics","clothing", "books", "home"],
+        required:true
     },
     image:{
         type:String,

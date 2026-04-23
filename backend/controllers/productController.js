@@ -3,16 +3,16 @@ exports.createProduct = async (req, res) => {
   try {
     const { name, price, description, category, image, stock } = req.body;
 
-    if (!name || !price || !description || !category || !image || !stock) {
-      res.status(400).json({ message: "All fieds are required" });
+    if (!name || !price || !description || !category || !image || stock=="") {
+     return  res.status(400).json({ message: "All fieds are required" });
     }
     const newProduct = await Product.create({
       name,
-      price,
+      price:Number(price),
       description,
       category,
       image,
-      stock,
+      stock:Number(stock),
     });
 
     return res.status(201).json({
@@ -28,11 +28,11 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, description, stock } = req.body;
+    const { name, description, stock, category, image, price } = req.body;
     const { id } = req.params;
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
-      { name, description, stock },
+      { name, price, description,category,image ,stock },
       { new: true },
     );
     if (!updatedProduct) {
@@ -83,4 +83,29 @@ exports.viewAllProduct=async(req,res)=>{
       error: error.message,
     });
     }
+};
+
+exports.getSingleProduct=async(req,res)=>{
+    try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Single product fetched",
+      data: product,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error fetching product",
+      error: error.message,
+    });
+  }
 }

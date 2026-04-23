@@ -29,7 +29,7 @@ export default function AdMinDashboard() {
             <Package className="text-blue-500" size={28} />
           </div>
           <p className="text-3xl font-bold mt-4 text-gray-900">
-            {stats.totalOrders}
+            {stats.totalProducts}
           </p>
           <p className="text-sm text-gray-500 mt-1">Total Products</p>
         </div>
@@ -54,7 +54,7 @@ export default function AdMinDashboard() {
           <p className="text-sm text-gray-500 mt-1">Registered Users</p>
         </div>
       </div>
-       <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+       <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-700">Revenue</h2>
             <span className="text-yellow-500 text-2xl">₹</span>
@@ -65,11 +65,11 @@ export default function AdMinDashboard() {
           <p className="text-sm text-gray-500 mt-1">Total Revenue</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow mt-8">
-        <h2 className="text-lg font-semibold mb-4">Order Status</h2>
-
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">Order Status</h2>
+        <div>
         {stats.statusStats.map((item, index) => (
-          <div key={index} className="flex justify-between mb-2">
-            <span className="capitalize">{item._id}</span>
+          <div key={index} className="flex justify-between items-center mb-2">
+            <span className="capitalize ">{item._id}</span>
             <span
               className={
                 item._id === "pending"
@@ -83,6 +83,7 @@ export default function AdMinDashboard() {
             </span>
           </div>
         ))}
+        </div>
       </div>
         
 
