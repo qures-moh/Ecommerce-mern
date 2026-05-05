@@ -14,8 +14,8 @@ const orderRoutes=require("./routes/orderRoutes");
 const paymentRoutes=require("./routes/paymentRoutes")
 const connectDb=require("./config/db");
 app.use(cors({
-    // origin:"http://localhost:5173",
-     origin: process.env.FRONTEND_URL,
+    origin:"http://localhost:5173",
+    //  origin: process.env.FRONTEND_URL,
        credentials:true,
       
 }));

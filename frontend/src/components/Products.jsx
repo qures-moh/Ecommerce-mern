@@ -12,7 +12,8 @@ export default function Products() {
     try {
       setLoading(true);
       const res = await API.get("/product");
-      setProducts(res.data.data);
+      console.log(res.data);
+      setProducts(res.data?.data || []);
     } catch (err) {
       console.log(err);
     }finally{
