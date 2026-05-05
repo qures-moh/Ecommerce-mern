@@ -14,8 +14,10 @@ const orderRoutes=require("./routes/orderRoutes");
 const paymentRoutes=require("./routes/paymentRoutes")
 const connectDb=require("./config/db");
 app.use(cors({
-    origin:"http://localhost:5173",
-       credentials:true
+    // origin:"http://localhost:5173",
+     origin: process.env.FRONTEND_URL,
+       credentials:true,
+      
 }));
 
 app.use(express.json());
@@ -33,6 +35,7 @@ app.use("/api/payment",paymentRoutes)
 
 
 connectDb();
-app.listen(process.env.PORT,()=>{
+const PORT = process.env.PORT || 3000;
+app.listen(PORT,()=>{
     console.log(`app is listening to port ${process.env.PORT}`)
 })

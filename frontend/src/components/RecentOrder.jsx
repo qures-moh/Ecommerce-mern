@@ -19,14 +19,15 @@ export default function RecentOrder() {
 
   const updateStatus = async (orderId, status) => {
     try {
-      const res = await API.patch(
+      const res = await API.put(
         `/order/updateStatus/${orderId}`,
         { status }
       );
       toast.success(res.data.message);
       fetchOrders(); // refresh
     } catch (error) {
-      alert(error.response?.data?.message);
+      console.log(error.message)
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -82,6 +83,7 @@ export default function RecentOrder() {
               {statusFlow[order.status] && (
                 <select
                 value=""
+
                   onChange={(e) =>
                     updateStatus(order._id, e.target.value)
                   }

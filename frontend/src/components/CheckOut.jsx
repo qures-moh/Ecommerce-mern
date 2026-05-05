@@ -12,51 +12,51 @@ const CheckOut = () => {
   const [country, setCountry] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [cart, setCart] = useState(null);
-  const navigate=useNavigate();
-    const user=useSelector((state)=>state.auth.user);
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
   const fetchCart = async () => {
     const res = await API.get("/cart/getCart");
     setCart(res.data.data);
   };
   const validateForm = () => {
-  if (!fullName.trim()) {
-    toast.error("Full name is required");
-    return false;
-  }
+    if (!fullName.trim()) {
+      toast.error("Full name is required");
+      return false;
+    }
 
-  if (!/^[A-Za-z ]{3,}$/.test(fullName)) {
-    toast.error("Enter valid name (min 3 letters)");
-    return false;
-  }
+    if (!/^[A-Za-z ]{3,}$/.test(fullName)) {
+      toast.error("Enter valid name (min 3 letters)");
+      return false;
+    }
 
-  if (!/^[6-9]\d{9}$/.test(phone)) {
-    toast.error("Enter valid 10-digit phone number");
-    return false;
-  }
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      toast.error("Enter valid 10-digit phone number");
+      return false;
+    }
 
-  if (!address.trim() || address.length < 5) {
-    toast.error("Address must be at least 5 characters");
-    return false;
-  }
+    if (!address.trim() || address.length < 5) {
+      toast.error("Address must be at least 5 characters");
+      return false;
+    }
 
-  if (!city.trim()) {
-    toast.error("City is required");
-    return false;
-  }
+    if (!city.trim()) {
+      toast.error("City is required");
+      return false;
+    }
 
-  if (!/^\d{6}$/.test(postalCode)) {
-    toast.error("Enter valid 6-digit postal code");
-    return false;
-  }
+    if (!/^\d{6}$/.test(postalCode)) {
+      toast.error("Enter valid 6-digit postal code");
+      return false;
+    }
 
-  if (!country.trim()) {
-    toast.error("Country is required");
-    return false;
-  }
+    if (!country.trim()) {
+      toast.error("Country is required");
+      return false;
+    }
 
-  return true;
-};
- const handleOnlinePayment = async () => {
+    return true;
+  };
+  const handleOnlinePayment = async () => {
     // Define address at the top of the function
     const shippingAddress = {
       fullName,
@@ -75,17 +75,17 @@ const CheckOut = () => {
       const order = data.order;
 
       const options = {
-        key:  import.meta.env.VITE_RAZORPAY_KEY, 
+        key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: order.amount,
         currency: "INR",
         name: "My Store",
         description: "Order Payment",
         order_id: order.id,
-         prefill: {
-    name: fullName,
-    email: user?.email || "test@example.com",
-     contact: phone
-  },
+        prefill: {
+          name: fullName,
+          email: user?.email || "test@example.com",
+          contact: phone,
+        },
         handler: async function (response) {
           try {
             // STEP A: Verify the signature
@@ -111,7 +111,9 @@ const CheckOut = () => {
             }
           } catch (error) {
             console.error("Verification error:", error);
-            toast.error("Payment successful, but we couldn't verify it. Please contact support.");
+            toast.error(
+              "Payment successful, but we couldn't verify it. Please contact support.",
+            );
           }
         },
         theme: { color: "#2563EB" }, // Matches your amber button
@@ -126,12 +128,13 @@ const CheckOut = () => {
   };
 
   useEffect(() => {
-      if (user === undefined || user === null) return;
-    if(!user){
-      navigate("/login")}
-      else{
-    fetchCart();
-}}, []);
+    if (user === undefined || user === null) return;
+    if (!user) {
+      navigate("/login");
+    } else {
+      fetchCart();
+    }
+  }, []);
   const total = cart?.items?.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0,
@@ -154,7 +157,7 @@ const CheckOut = () => {
       const res = await API.post("/order/createOrder", orderData);
       console.log(res.data);
       toast.success("Order placed successfully");
-     navigate("/myOrder")
+      navigate("/myOrder");
     } catch (err) {
       console.error(err);
       toast.error("Error placing order");
@@ -181,16 +184,16 @@ const CheckOut = () => {
           </div>
         </div>
         <form
-           onSubmit={(e) => {
+          onSubmit={(e) => {
             e.preventDefault();
             if (!validateForm()) return;
-    if (paymentMethod === "COD") {
-      handleSubmit(e);   
-    } else {
-       // stop normal submit
-      handleOnlinePayment();
-    }
-  }}
+            if (paymentMethod === "COD") {
+              handleSubmit(e);
+            } else {
+              // stop normal submit
+              handleOnlinePayment();
+            }
+          }}
           className="w-full max-w-md bg-white p-6 rounded-2xl shadow-lg flex flex-col gap-4"
         >
           <h2 className="text-xl font-bold text-center">Checkout</h2>
@@ -251,12 +254,19 @@ const CheckOut = () => {
             <option value="COD">Cash on Delivery</option>
             <option value="ONLINE">Online payment</option>
           </select>
+          {paymentMethod==="ONLINE" &&<div className="mt-3 p-3 bg-yellow-50 border rounded text-sm">
+            <p className="font-semibold text-gray-700">Payment Note</p>
+           <p>
+              Online payments are in test mode. Card payments may not work
+              properly. Please use Netbanking, UPI, or Wallet for successful
+              transactions.
+            </p>
+          </div>}
           <button
             className="bg-amber-500 text-white p-2 rounded-md hover:bg-amber-600 transition"
-          type="submit"
-            
+            type="submit"
           >
-           Place Order
+            Place Order
           </button>
         </form>
       </div>

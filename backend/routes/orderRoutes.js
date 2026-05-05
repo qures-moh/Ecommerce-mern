@@ -17,7 +17,7 @@ router.post("/createOrder", auth, createOrder);
 router.get("/getMyOrder", auth, getMyOrder);
 router.get("/admin/all", auth, isAdmin, getAllOrders);
 router.get("/getSingleOrder/:orderId", auth, getMySingleOrder);
-router.patch("/updateStatus/:orderId",auth,isAdmin,updateOrderStatus);
+router.put("/updateStatus/:orderId",auth,isAdmin,updateOrderStatus);
 
 router.get("/admin/dashboard",auth,isAdmin,getDashBoardStats);
 

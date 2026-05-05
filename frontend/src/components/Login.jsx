@@ -10,77 +10,73 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-const dispatch = useDispatch();
-const navigate=useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLoginOrSignUp = async () => {
     try {
-      
-   if (!validateForm()) return;
-      if(isLogin){
-      const res = await API.post("/user/login",{
-        email,password
-      });
-      toast.success("Login successful ");
-       const profileRes = await API.get("/user/profile");
-       const user = profileRes.data.data;
-      dispatch(AddUser(user));
-        if (user.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
-      setEmail("");
-      setPassword("");
-        
-      
-      console.log("Loginsuccesfull",res.data);
-    }else{
-      const res = await API.post("/user/register", {
-        name,
-        email,
-        password,
-      });
-      toast.success("Account created successfully ");
-       const profileRes = await API.get("/user/profile");
+      if (!validateForm()) return;
+      if (isLogin) {
+        const res = await API.post("/user/login", {
+          email,
+          password,
+        });
+        toast.success("Login successful ");
+        const profileRes = await API.get("/user/profile");
         const user = profileRes.data.data;
         dispatch(AddUser(user));
-      navigate("/");
-      console.log("Signup successful", res.data);
-      
-      setEmail("");
-      setPassword("");
-      setName("");
-    }
-    } catch (err) {
-      
-         const message =
-    err.response?.data?.message || "Something went wrong";
+        if (user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+        setEmail("");
+        setPassword("");
 
-    
-  toast.error(message);
+        console.log("Loginsuccesfull", res.data);
+      } else {
+        const res = await API.post("/user/register", {
+          name,
+          email,
+          password,
+        });
+        toast.success("Account created successfully ");
+        const profileRes = await API.get("/user/profile");
+        const user = profileRes.data.data;
+        dispatch(AddUser(user));
+        navigate("/");
+        console.log("Signup successful", res.data);
+
+        setEmail("");
+        setPassword("");
+        setName("");
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || "Something went wrong";
+
+      toast.error(message);
     }
   };
   const validateForm = () => {
-  if (!email || !password) {
-    toast.error("Email and password are required");
-    return false;
-  }
-    if (password.length < 6) {
-    toast.error("Password must be at least 6 characters");
-    return false;
-  }
-   if (!/\S+@\S+\.\S+/.test(email)) {
-  toast.error("Enter valid email");
-  return false;
-}
-   if (!isLogin) {
-    if (!name || name.trim().length < 2) {
-      toast.error("Name must be at least 2 characters");
+    if (!email || !password) {
+      toast.error("Email and password are required");
       return false;
     }
-  }
-  return true;
-  }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Enter valid email");
+      return false;
+    }
+    if (!isLogin) {
+      if (!name || name.trim().length < 2) {
+        toast.error("Name must be at least 2 characters");
+        return false;
+      }
+    }
+    return true;
+  };
   return (
     <div className="min-h-screen flex">
       <div className="hidden md:flex w-1/2 items-center justify-center bg-gradient-to-r from-sky-400 to-blue-500 ">
@@ -103,7 +99,9 @@ const navigate=useNavigate();
               placeholder="Full Name"
               className="w-full mb-3 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               value={name}
-              onChange={(e) =>{setName(e.target.value); }}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
               required
             />
           )}
@@ -112,7 +110,9 @@ const navigate=useNavigate();
             placeholder="Email"
             className="w-full mb-3 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             value={email}
-            onChange={(e) => {setEmail(e.target.value); }}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             required
           />
           <input
@@ -120,9 +120,8 @@ const navigate=useNavigate();
             placeholder="Password"
             className="w-full mb-4 p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  required
-
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <button
             className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition duration-300 shadow-md"
@@ -130,7 +129,11 @@ const navigate=useNavigate();
           >
             {isLogin ? "Login" : "Sign Up"}
           </button>
-     
+          <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-center">
+            <p className="font-semibold text-gray-700">Demo Admin Access</p>
+            <p>Email: Admin@gmail.com</p>
+            <p>Password: Admin@123</p>
+          </div>
           <p className="text-sm mt-2 text-center text-gray-600">
             {isLogin ? "Don't have an account?" : "Already have an account?"}
             <span
