@@ -50,7 +50,7 @@ exports.createUser = async (req, res) => {
   } catch (error) {
     console.log("User not saved", error.message);
      res.status(500).json({
-    message: "Server error",
+    message: error.message,
   });
   }
 };
