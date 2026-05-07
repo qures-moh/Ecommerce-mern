@@ -16,7 +16,7 @@ const connectDb=require("./config/db");
 app.use(cors({
    
      origin: process.env.FRONTEND_URL,
-       credentials:true,
+      credentials:true,
       
 }));
 
